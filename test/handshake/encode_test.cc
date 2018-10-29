@@ -3,7 +3,7 @@
 
 TEST(uint_encode, uint8) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
     uint_encode(sstr, static_cast<uint8_t>(0xFC));
 
     auto ret = sstr.str();
@@ -13,7 +13,7 @@ TEST(uint_encode, uint8) {
 
 TEST(uint_encode, uint16) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
     uint_encode(sstr, static_cast<uint16_t>(0xFCAB));
 
     auto ret = sstr.str();
@@ -26,7 +26,7 @@ TEST(uint_encode, uint16) {
 
 TEST(uint_encode, uint32) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
     uint_encode(sstr, static_cast<uint32_t>(0xFCAB1234));
 
     auto ret = sstr.str();
@@ -41,7 +41,7 @@ TEST(uint_encode, uint32) {
 
 TEST(uint_encode, uint64) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
     
     uint_encode(sstr, 0xFCAB12345678DE32);
 
@@ -61,7 +61,7 @@ TEST(uint_encode, uint64) {
 
 TEST(varint_encode, uint8) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
     
     varint_encode(sstr, 0x23);
 
@@ -72,7 +72,7 @@ TEST(varint_encode, uint8) {
 
 TEST(varint_encode, uint8_2) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0xFF);
     
@@ -84,7 +84,7 @@ TEST(varint_encode, uint8_2) {
 
 TEST(varint_encode, uint16) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0x1234);
 
@@ -96,7 +96,7 @@ TEST(varint_encode, uint16) {
 
 TEST(varint_encode, uint16_2) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0x5678);
 
@@ -110,7 +110,7 @@ TEST(varint_encode, uint16_2) {
 
 TEST(varint_encode, uint32) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0x12345678);
 
@@ -124,7 +124,7 @@ TEST(varint_encode, uint32) {
 
 TEST(varint_encode, uint32_2) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0xFF123456);
     auto ret = sstr.str();
@@ -141,7 +141,7 @@ TEST(varint_encode, uint32_2) {
 
 TEST(varint_encode, uint64) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     varint_encode(sstr, 0x1122334455667788);
     auto ret = sstr.str();
@@ -158,7 +158,7 @@ TEST(varint_encode, uint64) {
 
 TEST(varint_encode, uint64_2) {
     using namespace tun::handshake;
-    std::basic_stringstream<uint8_t> sstr;
+    std::basic_ostringstream<uint8_t> sstr;
 
     try {
         varint_encode(sstr, 0xFFFFFFFFFFFFFFFF);

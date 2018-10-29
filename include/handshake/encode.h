@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TUN_HANDSHAKE_ENCODE_
+#define _TUN_HANDSHAKE_ENCODE_
 
 #include <cstdint>
 #include <sstream>
@@ -10,42 +11,27 @@
 namespace tun {
 namespace handshake {
 
-template <typename T_Int> void uint_encode(std::basic_stringstream<uint8_t>& sstr, T_Int val) {
+template <typename T_Int> size_t uint_encode(std::basic_ostringstream<uint8_t>& sstr, T_Int val) {
     for (int i = 0; i < sizeof(T_Int); i++) {
         sstr.put(static_cast<uint8_t>((val >> (8 * (sizeof(T_Int) - i - 1))) & 0xFF));
     }
+    return sizeof(T_Int);
 }
 
-void varint_encode(std::basic_stringstream<uint8_t>& sstr, uint64_t val) {
-    int len_pt = 0;    
-    for (; len_pt < 4; len_pt++) {
-        if (val < (1UL << (8 * (1 << len_pt) - 2))) {
-            break;
-        }
+template <typename T_Int> T_Int uint_decode(std::basic_istringstream<uint8_t>& sstr) {
+    T_Int ret = 0;
+    for (int i = 0; i < sizeof(T_Int); i++) {
+        ret = ret << 8;
+        ret |= sstr.get();
     }
+    return ret;
+}
 
-    if (len_pt == 4) {
-        throw std::out_of_range("varint out of maximum");
-    }
+size_t varint_encode(std::basic_ostringstream<uint8_t>&, uint64_t);
 
-    val |= static_cast<uint64_t>(len_pt) << (8 * (1 << len_pt) - 2);
-    switch (len_pt) {
-    case 0:
-        uint_encode(sstr, static_cast<uint8_t>(val));
-        break;
-    case 1:
-        uint_encode(sstr, static_cast<uint16_t>(val));
-        break;
-    case 2:
-        uint_encode(sstr, static_cast<uint32_t>(val));
-        break;
-    case 3:
-        uint_encode(sstr, static_cast<uint64_t>(val));
-        break;
-    default:
-        break;
-    }
-};
+uint64_t varint_decode(std::basic_istringstream<uint8_t>&);
 
 }
 }
+
+#endif

@@ -1,9 +1,11 @@
 #ifndef _TUN_HANDSHAKE_ENCODE_
 #define _TUN_HANDSHAKE_ENCODE_
 
+#include "handshake/entity.h"
 #include <cstdint>
 #include <sstream>
 #include <stdexcept>
+#include <memory>
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -28,8 +30,10 @@ template <typename T_Int> T_Int uint_decode(std::basic_istringstream<uint8_t>& s
 }
 
 size_t varint_encode(std::basic_ostringstream<uint8_t>&, uint64_t);
-
 uint64_t varint_decode(std::basic_istringstream<uint8_t>&);
+
+size_t entity_encode(std::basic_ostringstream<uint8_t>&, entity&);
+std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>&);
 
 }
 }

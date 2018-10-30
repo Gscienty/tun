@@ -1,4 +1,6 @@
 #include "handshake/encode.h"
+#include "handshake/client_hello.h"
+#include "handshake/server_hello.h"
 
 namespace tun {
 namespace handshake {
@@ -46,6 +48,46 @@ uint64_t varint_decode(std::basic_istringstream<uint8_t>& sstr) {
     default:
         throw std::bad_exception();
     }
+}
+
+size_t entity_encode(std::basic_ostringstream<uint8_t>& sstr, entity& e) {
+    uint_encode(sstr, e.type());
+    size_t len = e.size();
+    uint_encode(sstr, static_cast<uint16_t>(len >> 8));
+    uint_encode(sstr, static_cast<uint8_t>(len));
+    e.serialize(sstr);
+    return 4 + e.size();
+}
+
+std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>& sstr) {
+    std::unique_ptr<entity> ptr;
+    handshake_type type = uint_decode<handshake_type>(sstr);
+
+    size_t len = 0;
+    len = uint_decode<uint16_t>(sstr);
+    len <<= 8;
+    len |= uint_decode<uint8_t>(sstr);
+
+    if (len < static_cast<size_t>(sstr.rdbuf()->in_avail())) {
+        return ptr;
+    }
+
+    switch (type) {
+    case HT_CLIENT_HELLO:
+        ptr.reset(new client_hello());
+        break;
+    case HT_SERVER_HELLO:
+        ptr.reset(new server_hello());
+        break;
+    default:
+        break;
+    }
+
+    if (bool(ptr)) {
+        ptr->deserialize(sstr);
+    }
+
+    return ptr;
 }
 
 }

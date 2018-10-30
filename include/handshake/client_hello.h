@@ -33,6 +33,7 @@ public:
     size_t size() const;
 
     bool operator== (const client_hello&) const;
+    bool operator!= (const client_hello&) const;
 };
 
 }

@@ -59,7 +59,7 @@ size_t client_hello::serialize(std::basic_ostringstream<uint8_t>& sstr) {
 }
 
 void client_hello::deserialize(std::basic_istringstream<uint8_t>& sstr) {
-    size_t len = 0;
+    int len = 0;
     // decode legacy version
     this->_legacy_version = uint_decode<protocol_version_t>(sstr);
 
@@ -160,6 +160,10 @@ bool client_hello::operator==(const client_hello& other) const {
     }
 
     return true;
+}
+
+bool client_hello::operator!= (const client_hello& other) const {
+    return !(*this == other);
 }
 
 }

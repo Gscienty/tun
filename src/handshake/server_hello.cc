@@ -18,12 +18,14 @@ size_t server_hello::serialize(std::basic_ostringstream<uint8_t>& sstr) {
     ret += uint_encode(sstr, this->_version);
 
     // encode random
-    for (auto c : this->_random) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_random.data(), this->_random.size());
+    ret += this->_random.size();
 
     // encode legacy session id
     arr_len = this->_legacy_session_id.size();
     ret += uint_encode(sstr, static_cast<uint8_t>(arr_len));
-    for (auto c : this->_legacy_session_id) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_legacy_session_id.data(), this->_legacy_session_id.size());
+    ret += this->_legacy_session_id.size();
 
     // encode cipher suite
     ret += uint_encode(sstr, this->_cipher_suite);
@@ -48,12 +50,12 @@ void server_hello::deserialize(std::basic_istringstream<uint8_t>& sstr) {
 
     // decode random
     this->_random.resize(32);
-    for (auto& c : this->_random) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_random.data()), this->_random.size());
 
     // decode legacy session id
     len = uint_decode<uint8_t>(sstr);
     this->_legacy_session_id.resize(len);
-    for (auto& c : this->_legacy_session_id) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_legacy_session_id.data()), this->_legacy_session_id.size());
 
     // decode cipher suite
     this->_cipher_suite = uint_decode<cipher_suite_t>(sstr);

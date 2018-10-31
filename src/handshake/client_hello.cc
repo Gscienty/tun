@@ -23,7 +23,8 @@ size_t client_hello::serialize(std::basic_ostringstream<uint8_t>& sstr) {
     if (this->_random.size() != 32) {
         throw std::bad_exception();
     }
-    for (auto c : this->_random) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_random.data(), this->_random.size());
+    ret += this->_random.size();
     
     // encode legacy session id
     arr_len = this->_legacy_session_id.size();
@@ -31,7 +32,8 @@ size_t client_hello::serialize(std::basic_ostringstream<uint8_t>& sstr) {
         throw std::out_of_range("legacy session id out of range");
     }
     ret += uint_encode(sstr, static_cast<uint8_t>(arr_len));
-    for (auto c : this->_legacy_session_id) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_legacy_session_id.data(), this->_legacy_session_id.size());
+    ret += this->_legacy_session_id.size();
 
     // encode cipher suites
     arr_len = this->_cipher_suites.size();
@@ -47,7 +49,8 @@ size_t client_hello::serialize(std::basic_ostringstream<uint8_t>& sstr) {
         throw std::bad_exception();
     }
     ret += uint_encode(sstr, static_cast<uint8_t>(arr_len));
-    for (auto c : this->_legacy_compression_methods) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_legacy_compression_methods.data(), this->_legacy_compression_methods.size());
+    ret += this->_legacy_compression_methods.size();
 
     // encode extension
     arr_len = 0;
@@ -65,12 +68,12 @@ void client_hello::deserialize(std::basic_istringstream<uint8_t>& sstr) {
 
     // decode random
     this->_random.resize(32, 0);
-    for (auto& c : this->_random) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_random.data()), this->_random.size());
 
     // decode legacy session id
     len = uint_decode<uint8_t>(sstr);
     this->_legacy_session_id.resize(len);
-    for (auto& c : this->_legacy_session_id) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_legacy_session_id.data()), this->_legacy_session_id.size());
 
     // decode cipher suites
     len = uint_decode<uint16_t>(sstr);
@@ -80,7 +83,7 @@ void client_hello::deserialize(std::basic_istringstream<uint8_t>& sstr) {
     // decode legacy compression methods
     len = uint_decode<uint8_t>(sstr);
     this->_legacy_compression_methods.resize(len);
-    for (auto& c : this->_legacy_compression_methods) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_legacy_compression_methods.data()), this->_legacy_compression_methods.size());
 
     // decode extension
     this->_extensions.clear();

@@ -13,16 +13,20 @@ size_t tls_extension::serialize(std::basic_ostringstream<uint8_t>& sstr) {
     // encode data
     size_t arr_len = this->_data.size();
     ret += uint_encode(sstr, static_cast<uint16_t>(arr_len));
-    for (auto c : this->_data) { ret += uint_encode(sstr, c); }
+    sstr.write(this->_data.data(), this->_data.size());
+    ret += this->_data.size();
 
     return ret;
 }
 
 void tls_extension::deserialize(std::basic_istringstream<uint8_t>& sstr) {
+    // decode type
     this->_type = uint_decode<extension_type_t>(sstr);
+
+    // decode data
     size_t len = uint_decode<uint16_t>(sstr);
     this->_data.resize(len);
-    for (auto& c : this->_data) { c = uint_decode<uint8_t>(sstr); }
+    sstr.read(const_cast<uint8_t *>(this->_data.data()), this->_data.size());
 }
 
 size_t tls_extension::size() const {

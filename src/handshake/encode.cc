@@ -3,6 +3,9 @@
 #include "handshake/server_hello.h"
 #include "handshake/new_session_ticket.h"
 #include "handshake/encrypted_extensions.h"
+#include "handshake/end_of_early_data.h"
+#include "handshake/finished.h"
+#include "handshake/key_update_request.h"
 
 namespace tun {
 namespace handshake {
@@ -86,6 +89,15 @@ std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>& sstr) {
         break;
     case HT_ENCRYPTED_EXTENSIONS:
         ptr.reset(new encrypted_extensions());
+        break;
+    case HT_END_OF_EARLY_DATA:
+        ptr.reset(new end_of_early_data());
+        break;
+    case HT_FINISHED:
+        ptr.reset(new finished());
+        break;
+    case HT_KEY_UPDATE:
+        ptr.reset(new key_update_request());
         break;
     default:
         break;

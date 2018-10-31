@@ -15,6 +15,7 @@ private:
 public:
     std::vector<tls_extension>& extensions() { return this->_extensions; }
 
+    virtual handshake_type type() const override { return HT_ENCRYPTED_EXTENSIONS; }
     virtual size_t serialize(std::basic_ostringstream<uint8_t>&) override;
     virtual void deserialize(std::basic_istringstream<uint8_t>&) override;
     virtual size_t size() const override;

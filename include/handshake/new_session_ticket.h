@@ -24,6 +24,7 @@ public:
     std::basic_string<uint8_t>& ticket() { return this->_ticket; }
     std::vector<tls_extension>& extensions() { return this->_extensions; }
 
+    virtual handshake_type type() const override { return HT_NEW_SESSION_TICKET; }
     virtual size_t serialize(std::basic_ostringstream<uint8_t>&) override;
     virtual void deserialize(std::basic_istringstream<uint8_t>&) override;
     virtual size_t size() const override;

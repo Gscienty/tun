@@ -1,6 +1,8 @@
 #include "handshake/encode.h"
 #include "handshake/client_hello.h"
 #include "handshake/server_hello.h"
+#include "handshake/new_session_ticket.h"
+#include "handshake/encrypted_extensions.h"
 
 namespace tun {
 namespace handshake {
@@ -78,6 +80,12 @@ std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>& sstr) {
         break;
     case HT_SERVER_HELLO:
         ptr.reset(new server_hello());
+        break;
+    case HT_NEW_SESSION_TICKET:
+        ptr.reset(new new_session_ticket());
+        break;
+    case HT_ENCRYPTED_EXTENSIONS:
+        ptr.reset(new encrypted_extensions());
         break;
     default:
         break;

@@ -9,6 +9,7 @@ namespace handshake {
 typedef uint16_t protocol_version_t;
 typedef uint16_t cipher_suite_t;
 typedef uint16_t extension_type_t;
+typedef uint8_t key_update_request_t;
 
 enum handshake_type : uint8_t {
     HT_CLIENT_HELLO         = 1,

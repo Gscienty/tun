@@ -10,7 +10,7 @@
 namespace tun {
 namespace handshake {
 
-class cert_verify : entity {
+class cert_verify : public entity {
 private:
     x509::sign_algo _sign_algo;
     std::basic_string<uint8_t> _sign;

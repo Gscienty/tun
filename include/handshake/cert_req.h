@@ -9,7 +9,7 @@
 namespace tun {
 namespace handshake {
 
-class cert_req : entity {
+class cert_req : public entity {
 private:
     std::basic_string<uint8_t> _ctx;
     std::vector<tls_extension> _extensions;

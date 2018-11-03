@@ -6,6 +6,9 @@
 #include "handshake/end_of_early_data.h"
 #include "handshake/finished.h"
 #include "handshake/key_update_request.h"
+#include "handshake/cert_body.h"
+#include "handshake/cert_req.h"
+#include "handshake/cert_verify.h"
 
 namespace tun {
 namespace handshake {
@@ -56,12 +59,13 @@ uint64_t varint_decode(std::basic_istringstream<uint8_t>& sstr) {
 }
 
 size_t entity_encode(std::basic_ostringstream<uint8_t>& sstr, entity& e) {
-    uint_encode(sstr, e.type());
+    size_t ret = 0;
+    ret += uint_encode(sstr, e.type());
     size_t len = e.size();
-    uint_encode(sstr, static_cast<uint16_t>(len >> 8));
-    uint_encode(sstr, static_cast<uint8_t>(len));
-    e.serialize(sstr);
-    return 4 + e.size();
+    ret += uint_encode(sstr, static_cast<uint16_t>(len >> 8));
+    ret += uint_encode(sstr, static_cast<uint8_t>(len));
+    ret += e.serialize(sstr);
+    return ret;
 }
 
 std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>& sstr) {
@@ -98,6 +102,15 @@ std::unique_ptr<entity> entity_decode(std::basic_istringstream<uint8_t>& sstr) {
         break;
     case HT_KEY_UPDATE:
         ptr.reset(new key_update_request());
+        break;
+    case HT_CERTIFICATE:
+        ptr.reset(new cert_body());
+        break;
+    case HT_CERTIFICATE_VERIFY:
+        ptr.reset(new cert_verify());
+        break;
+    case HT_CERTIFICATE_REQUEST:
+        ptr.reset(new cert_req());
         break;
     default:
         break;
